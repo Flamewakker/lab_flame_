@@ -18,7 +18,6 @@
 4. Аутентификация - проверка успешной аутентификации при доступе к приватным ресурсам.
 
 ## Предполагаемая реализация автотестов:
-```javascript
 const request = require('supertest');
 const expect = require('chai').expect;
 const faker = require('faker');
@@ -30,44 +29,48 @@ describe('API Tests', function() {
   it('should make a successful API request and return the right status code', function(done) {
     request(app)
       .get('/api/public-resource')
+      .expect(200)
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(200);
+        if (err) return done(err);
         done();
       });
   });
-  
+
   it('should handle invalid requests properly', function(done) {
     request(app)
       .get('/api/invalid-endpoint')
+      .expect(404)
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(404);
+        if (err) return done(err);
         done();
       });
   });
-  
+
   it('should validate data returned by the API', function(done) {
     request(app)
       .get('/api/public-resource')
+      .expect(200)
       .end(function(err, res) {
+        if (err) return done(err);
         expect(res.body).to.have.property('data');
         done();
       });
   });
-  
+
   it('should authenticate for private resources', function(done) {
     let username = faker.internet.userName();
     let password = faker.internet.password();
     request(app)
       .get('/api/protected-resource')
       .auth(username, password)
+      .expect(200)
       .end(function(err, res) {
-        expect(res.statusCode).to.equal(200);
+        if (err) return done(err);
         done();
       });
   });
 
 });
-```
 
 ## Выводы:
 Проведено успешное автоматизированное тестирование API на Node.js! ⚙️🔬
